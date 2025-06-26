@@ -1,3 +1,16 @@
+# approach.py
+#
+# This module defines the base classes and core logic for retrieval-augmented generation (RAG) approaches
+# used in the Azure Search + OpenAI backend. It provides the `Approach` abstract base class, data models for
+# documents and chat steps, and utility methods for search, embedding, and chat completion orchestration.
+#
+# Key responsibilities:
+# - Define the `Approach` interface for implementing custom RAG strategies
+# - Provide data structures for documents, token usage, and chat steps
+# - Implement core search and embedding logic for Azure Cognitive Search and OpenAI
+# - Support agentic retrieval, semantic search, and reasoning models
+# - Utility methods for prompt management, citation formatting, and chat completion
+
 import os
 from abc import ABC
 from collections.abc import AsyncGenerator, Awaitable
@@ -39,6 +52,11 @@ from core.authentication import AuthenticationHelper
 
 @dataclass
 class Document:
+    """
+    Represents a document retrieved from search, including metadata, captions, and scores.
+    Used for both text and image-based retrieval results.
+    """
+
     id: Optional[str] = None
     content: Optional[str] = None
     category: Optional[str] = None
@@ -81,6 +99,10 @@ class Document:
 
 @dataclass
 class ThoughtStep:
+    """
+    Represents a step or thought in the reasoning or chat process, with optional token usage.
+    """
+
     title: str
     description: Optional[Any]
     props: Optional[dict[str, Any]] = None
@@ -92,12 +114,20 @@ class ThoughtStep:
 
 @dataclass
 class DataPoints:
+    """
+    Holds lists of text and image data points for answers or context.
+    """
+
     text: Optional[list[str]] = None
     images: Optional[list] = None
 
 
 @dataclass
 class ExtraInfo:
+    """
+    Contains additional information for a response, such as data points, thoughts, and follow-up questions.
+    """
+
     data_points: DataPoints
     thoughts: Optional[list[ThoughtStep]] = None
     followup_questions: Optional[list[Any]] = None
@@ -105,6 +135,10 @@ class ExtraInfo:
 
 @dataclass
 class TokenUsageProps:
+    """
+    Tracks token usage for a completion, including prompt, completion, and reasoning tokens.
+    """
+
     prompt_tokens: int
     completion_tokens: int
     reasoning_tokens: Optional[int]
@@ -126,10 +160,20 @@ class TokenUsageProps:
 # https://learn.microsoft.com/azure/ai-services/openai/how-to/reasoning
 @dataclass
 class GPTReasoningModelSupport:
+    """
+    Indicates support for streaming in GPT reasoning models.
+    """
+
     streaming: bool
 
 
 class Approach(ABC):
+    """
+    Abstract base class for all retrieval-augmented generation (RAG) approaches.
+    Subclasses must implement `run` and `run_stream` for synchronous and streaming chat.
+    Provides core search, embedding, and chat completion utilities for use by subclasses.
+    """
+
     # List of GPT reasoning models support
     GPT_REASONING_MODELS = {
         "o1": GPTReasoningModelSupport(streaming=False),
