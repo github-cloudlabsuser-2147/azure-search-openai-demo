@@ -38,6 +38,7 @@ The backend is configured via environment variables, including Azure service cre
 - `config.py`: Configuration constants.
 - `prepdocs.py` and `prepdocslib/`: Document processing and ingestion logic.
 - `requirements.txt`: Python dependencies.
+- `approaches/approach.py`: Base classes and logic for retrieval-augmented generation (RAG) approaches, with detailed comments and docstrings for maintainability.
 
 ## Running Locally
 
@@ -47,23 +48,6 @@ The backend is configured via environment variables, including Azure service cre
    ```powershell
    pwsh ./start.ps1
    ```
-
-## Dependencies
-
-See `requirements.txt` for all dependencies. Major packages include:
-- Quart
-- Azure SDKs (Cognitive Search, Storage, Identity, Speech)
-- OpenAI SDK
-- OpenTelemetry
-
-## Security
-
-- Authentication and access control are enforced for sensitive endpoints.
-- Uploaded files are stored per-user and access-controlled.
-
-## Telemetry
-
-- Azure Monitor and OpenTelemetry are enabled if configured via environment variables.
 
 ## Requirements
 
@@ -200,5 +184,18 @@ zipp==3.21.0
 
 > **Note:** This list is auto-generated and may include transitive dependencies. For the most up-to-date list, see the actual `requirements.txt` file.
 
+## Security
+
+- Authentication and access control are enforced for sensitive endpoints.
+- Uploaded files are stored per-user and access-controlled.
+
+## Telemetry
+
+- Azure Monitor and OpenTelemetry are enabled if configured via environment variables.
+
+## Developer Notes
+
+- The `approaches/approach.py` file now includes detailed module-level and class-level comments, explaining its structure and responsibilities. This improves maintainability and onboarding for new contributors.
+
 ---
-For more details, see the code and comments in `app.py` and related modules.
+For more details, see the code and comments in `app.py`, `approach.py`, and related modules.
